@@ -34,7 +34,11 @@ class ProductVariation(models.Model):
     product = models.ForeignKey(Product, related_name="variations",on_delete=models.CASCADE)
     color = models.CharField(max_length=255)
     asin = models.CharField(max_length=255)
+    def __str__(self):
+        return self.color
 
 class ProductSize(models.Model):
     product = models.ForeignKey(Product, related_name="sizes",on_delete=models.CASCADE)
     value = models.CharField(max_length=255)
+    def __str__(self):
+        return self.value

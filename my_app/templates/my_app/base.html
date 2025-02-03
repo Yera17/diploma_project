@@ -9,10 +9,10 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <title>{% block title %}{% endblock %} | Clothing Store</title>
     </head>
-    <body class="min-h-screen flex flex-col">
+    <body>
         {% include "./nav.html" %}
 
-        <div class="p-6 flex-grow">
+        <div class="px-6 py-6">
             {% block content %}
             {% endblock %}
         </div>
