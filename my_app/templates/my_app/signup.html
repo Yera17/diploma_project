@@ -1,4 +1,5 @@
 {% extends 'my_app/base.html' %}
+{% load static %}
 
 {% block title %}
     Sign Up
@@ -31,9 +32,23 @@
                 {{ form.email }}
             </div>
 
+
+
+
             <div class="mb-3">
                 <label class="inline-block mb-2">Photo:</label><br>
-                {{ form.photo }}
+                <div id="drop-area" class="flex flex-col items-center justify-center border-4 border-dashed border-gray-300 p-6 rounded-lg hover:bg-gray-50">
+                    <label for="photo" class="text-center cursor-pointer text-gray-700 font-medium">
+                      <span class="block mb-2">Drag and drop an image or click to select</span>
+                      <div class="flex items-center justify-center space-x-2">
+                        <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        <span class="text-sm text-gray-500">Choose an image</span>
+                      </div>
+                    </label>
+                    {{ form.photo }}
+                </div>
             </div>
 
             <div class="mb-3">
@@ -59,4 +74,6 @@
             <button class="py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700">Submit</button>
         </form>
     </div>
+
+    <script src="{% static 'js/upload.js' %}"></script>
 {% endblock %}
