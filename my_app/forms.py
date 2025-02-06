@@ -37,7 +37,9 @@ class SignUpForm(UserCreationForm):
         'class': 'w-full py-4 px-6 rounded-xl'
     }))
 
-    photo = forms.ImageField(required=False)
+    photo = forms.FileField(widget=forms.FileInput(attrs={
+        'class': 'hidden'
+    }), required=False)
 
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'placeholder': 'Your Email Address',

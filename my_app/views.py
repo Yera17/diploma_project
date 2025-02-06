@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+
+from bag.models import Bag
 from products.models import Product, Category
 from .forms import SignUpForm
 from .models import UserProfile
@@ -24,6 +26,7 @@ def signup(request):
             user = form.save()
             user.save()
             UserProfile.objects.create(user=user, photo=form.cleaned_data['photo'])
+            Bag.objects.create(user=user)
             return redirect('/login/')
     else:
         form = SignUpForm()

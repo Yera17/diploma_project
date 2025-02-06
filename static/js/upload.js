@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const dropArea = document.getElementById('drop-area');
   const fileInput = document.querySelector('#drop-area>input[type="file"]');
 
-  fileInput.classList.add("hidden");
-
   dropArea.addEventListener('click', () => {
     if (!fileInput.disabled) {
       fileInput.click();
@@ -37,8 +35,8 @@ document.addEventListener('DOMContentLoaded', function () {
 const change = (fileInput, dropArea) => {
     const file = fileInput.files[0];
     if (file) {
-      fileInput.disabled = true;
-      dropArea.classList.remove("hover:bg-gray-50")
-      dropArea.innerHTML = 'Image added';
+      dropArea.classList.add("pointer-events-none");
+      dropArea.classList.remove("hover:bg-gray-50");
+      dropArea.querySelector('label').innerHTML = 'Image added';
     }
 }

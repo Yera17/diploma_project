@@ -1,1 +1,21 @@
 {% extends "my_app/base.html" %}
+
+{% block title %}
+    My Bag
+{% endblock %}
+
+{% block content %}
+    <h1>Products:</h1>
+    <ul>
+        {% for item in bag_items %}
+            <li>
+                <ul>
+                    <li><label for="">Product Name:</label><br>{{ item.productSize.product.name }}</li>
+                    <li><label for="">Size:</label><br>{{ item.productSize }}</li>
+                    <li><label for="">Quantity:</label><br>{{ item.quantity }}</li>
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
