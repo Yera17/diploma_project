@@ -5,17 +5,29 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Products:</h1>
-    <ul>
-        {% for item in bag_items %}
-            <li>
-                <ul>
-                    <li><label for="">Product Name:</label><br>{{ item.productSize.product.name }}</li>
-                    <li><label for="">Size:</label><br>{{ item.productSize }}</li>
-                    <li><label for="">Quantity:</label><br>{{ item.quantity }}</li>
-                </ul>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+        <h1 class="mb-12 text-3xl text-center">Your Bag</h1>
 
+        <form method="post">
+            {% csrf_token %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Size</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for form in formset %}
+                            <tr>
+                                <td>{{ form.productSize }}</td>
+                                <td>{{ form.quantity }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            <button type="submit">Update Bag Items</button>
+        </form>
+
+    </div>
 {% endblock %}
