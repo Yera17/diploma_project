@@ -5,29 +5,66 @@
 {% endblock %}
 
 {% block content %}
-    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+    <div class="w-2/3 mx-auto mt-6 px-6 py-12 bg-gray-100 rounded-xl">
         <h1 class="mb-12 text-3xl text-center">Your Bag</h1>
+        <div class="grid grid-cols-5">
+            <form method="post" action="." class="col-span-4">
+                {% csrf_token %}
 
-        <form method="post">
-            {% csrf_token %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Product Size</th>
-                            <th>Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for form in formset %}
-                            <tr>
-                                <td>{{ form.productSize }}</td>
-                                <td>{{ form.quantity }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            <button type="submit">Update Bag Items</button>
-        </form>
+                {{ formset.management_form }}
 
+                <ul class="list-decimal grid gap-12">
+                    {% for form in formset %}
+                        <li class="ml-2 p-3">
+                            <div class="flex justify-between border border-gray-200 rounded-xl mb-3">
+                                <div class="w-2/3 p-6 flex border-r border-gray-200">
+                                    <p class="text-xl">{{ form.instance.productSize.product }}</p>
+                                    <p>{{ form.id }}</p>
+                                </div>
+
+                                <div class="p-6">
+                                    <div class="mb-3 flex justify-between">
+                                        <label class="inline-block mb-2 flex items-center p-2">Size:</label>
+                                        <div>{{ form.productSize }}</div>
+                                    </div>
+
+                                    <div class="mb-3 flex justify-between">
+                                        <label class="inline-block mb-2 flex items-center p-2">Quantity:</label>
+                                        <div class="flex justify-end">{{ form.quantity }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                        {% if form.errors or form.non_field_errors %}
+                            <div class="mb-3 p-6 bg-red-100 rounded-xl">
+                                {% for field in form %}
+                                    {{ field.errors }}
+                                {% endfor %}
+
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                {% if formset.initial_form_count == 0 %}
+                    <div class="">
+                        <h2 class="text-xl">Your Bag is empty <a href="/" class="text-teal-500 hover:text-teal-700">Go Back</a></h2>
+                    </div>
+                {% else %}
+                    <div class="w-full flex justify-end">
+                        <button type="submit" class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700">Update</button>
+                    </div>
+                {% endif %}
+            </form>
+            <div class="col-span-1 p-3 grid justify-center">
+                {% for form in formset %}
+                    <form method="POST" action="{% url 'bag:delete_bag_item' form.instance.id %}" onsubmit="return confirm('Are you sure you want to delete this item?')">
+                        {% csrf_token %}
+                        <button type="submit" class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-red-500 hover:bg-red-700">Delete</button>
+                    </form>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 {% endblock %}
