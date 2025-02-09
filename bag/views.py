@@ -36,7 +36,7 @@ def delete_bag_item(request, bag_item_id):
         bag_item.delete()
         return redirect('bag:bag')
 
-    return render(request, 'bag/delete_bag_item.html', {'bag_item': bag_item})
+    return render(request, 'bag/bag.html', {'bag_item': bag_item})
 
 
 
