@@ -13,7 +13,21 @@
         <div class="col-span-1"></div>
 
         <div class="col-span-4 p-6 bg-gray-100 rounded-xl flex flex-col justify-between">
-            <h1 class="mb-6 text-3xl">{{ product.name }}</h1>
+            <h1 class="text-3xl">{{ product.name }}</h1>
+
+            {% if messages %}
+                <ul class="bg-red-300 p-2 rounded-xl border border-gray-300">
+                    {% for message in messages %}
+                        <li class="flex justify-center text-xl text-gray-600">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <form class="mb-3" method="post" action="{% url 'wish_list:add_to_wish_list' product.id %}">
+                    {% csrf_token %}
+
+                    <button title="Add to Wish List" class="flex mb-3 text-2xl hover:text-3xl text-red-500 hover:text-red-700"><i class="absolute z-10 fa-solid fa-heart"></i></button>
+                </form>
+            {% endif %}
 
             <p class="text-gray-700"><strong class="text-gray-500">Brand:</strong>
                 {{ product.brand }}

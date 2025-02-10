@@ -1,0 +1,36 @@
+{% extends 'my_app/base.html' %}
+
+{% block title %}
+    Wish List
+{% endblock %}
+
+{% block content %}
+    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+        <h2 class="mb-12 text-2xl text-center">Wish List</h2>
+
+        <div class="grid grid-cols-5 gap-3">
+            {% for wish in wishes %}
+                <div>
+                    <a href="{% url 'products:detail' wish.product_id %}">
+                        <div>
+                            <form class="flex justify-end" method="post" action="{% url 'wish_list:remove_from_wish_list' wish.id %}">
+                                {% csrf_token %}
+
+                                <button class="text-3xl hover:text-4xl hover:text-red-700" title="Delete from Wish List">
+                                    <i class="m-2 absolute z-10 fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                            <img src="{{ wish.product.img_url }}" class="rounded-t-xl w-full h-96 object-cover" alt="{{ wish.product.name }}">
+                        </div>
+
+                        <div class="p-6 bg-white rounded-b-xl">
+                            <h2 class="text-2xl">{{ wish.product.name }}</h2>
+                            <p class="text-gray-500 flex justify-end">Price: {{ wish.product.price }}$</p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

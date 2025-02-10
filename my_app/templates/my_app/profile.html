@@ -1,0 +1,27 @@
+{% extends 'my_app/base.html' %}
+
+{% block title %}
+	My Profile
+{% endblock %}
+
+{% block content %}
+    <div class="w-2/3 mx-auto p-3 m-3 bg-gray-100 rounded-xl grid grid-cols-5 gap-3">
+        <div class="col-span-2">
+            <img class="rounded-xl" src="{{ user_profile.photo.url }}" alt="{{ user.username }}">
+        </div>
+        <div class="col-span-3">
+            <h1 class="text-3xl flex justify-center">{{ user.first_name }} {{ user.last_name }}</h1>
+
+            <div class="m-3">
+                <p class="mb-1 text-xl">Username: {{ user.username }}</p>
+                <p class="mb-1 text-xl">Email: {{ user.email }}</p>
+            </div>
+
+            <form class="flex justify-center" method="post" action="{% url 'my_app:logout' %}">
+                {% csrf_token %}
+
+                <button class="py-4 px-8 text-lg text-white rounded-xl bg-red-500 hover:bg-red-700">Logout</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
