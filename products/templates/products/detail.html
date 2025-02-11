@@ -80,4 +80,44 @@
         </div>
     </div>
 
+    <div>
+         <form class="flex justify-center flex-col" method="post" action="{% url 'review:add_review' product.id %}">
+            {% csrf_token %}
+             <div class="mb-3">
+                <label class="inline-block mb-2">Title:</label><br>
+                {{ review_form.title }}
+             </div>
+
+             <div class="mb-3">
+                <label class="inline-block mb-2">Rating:</label><br>
+                {{ review_form.rating }}
+             </div>
+
+             <div class="mb-3">
+                <label class="inline-block mb-2">Content:</label><br>
+                {{ review_form.text }}
+             </div>
+
+            {% if review_form.errors or review_form.non_field_errors %}
+                <div class="mb-3 p-6 bg-red-100 rounded-xl">
+                    {% for field in review_form %}
+                        {{ field.errors }}
+                    {% endfor %}
+
+                    {{ review_form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <button class="py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700">Submit</button>
+        </form>
+
+        <div>
+            {% for review in reviews %}
+                <h2>{{ review.user.username }}</h2>
+                <h3>{{ review.title }}</h3>
+                <h4>{{ review.rating }}</h4>
+                <p>{{ review.text }}</p>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
