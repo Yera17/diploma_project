@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
     <head>
@@ -6,17 +7,19 @@
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+        <script src="https://kit.fontawesome.com/5a2cf47156.js" crossorigin="anonymous"></script>
         <script src="https://cdn.tailwindcss.com"></script>
         <title>{% block title %}{% endblock %} | Clothing Store</title>
     </head>
-    <body class="min-h-screen flex flex-col">
+    <body>
         {% include "./nav.html" %}
 
-        <div class="p-6 flex-grow">
+        <div class="px-6 py-6">
             {% block content %}
             {% endblock %}
         </div>
 
         {% include "./footer.html" %}
+        <script src="{% static 'js/upload.js' %}"></script>
     </body>
 </html>

@@ -1,8 +1,43 @@
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 
-# Create your views here.
+from bag.models import Bag
+from products.models import Product, Category
+from wish_list.models import WishList
+from .forms import SignUpForm
+from .models import UserProfile
 def index(request):
-    return render(request, 'my_app/index.html')
+    categories = Category.objects.all()
+    products = Product.objects.all()
+    return render(request, 'my_app/index.html', {
+        'categories': categories,
+        'products': products,
+    })
 
 def contact(request):
     return render(request, 'my_app/contact.html')
+
+def about(request):
+    return render(request, 'my_app/about.html')
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            user = form.save()
+            user.save()
+            UserProfile.objects.create(user=user, photo=form.cleaned_data['photo'])
+            Bag.objects.create(user=user)
+            WishList.objects.create(user=user)
+            return redirect('/login/')
+    else:
+        form = SignUpForm()
+
+    return render(request, 'my_app/signup.html', {
+        'form': form,
+    })
+
+def profile(request, user_id):
+    user = User.objects.get(id=user_id)
+    return render(request, 'my_app/profile.html', {"user":user})
