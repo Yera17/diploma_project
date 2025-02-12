@@ -8,13 +8,21 @@ class ReviewForm(forms.ModelForm):
         fields = ['text', 'title', 'rating']
 
     title = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
+        'class': 'p-3 rounded-xl w-full min-w-0',
+        'placeholder': 'Title...',
     }))
 
-    rating = forms.FloatField(widget=forms.NumberInput(attrs={
-        'class': 'form-control'
-    }))
+    RATING_CHOICES = [(x / 2, str(x / 2)) for x in range(2, 11)]
+
+    rating = forms.ChoiceField(
+        choices=RATING_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'p-3 rounded-xl w-full min-w-0',
+        })
+    )
 
     text = forms.CharField(widget=forms.Textarea(attrs={
-        'class': 'form-control'
+        'class': 'p-3 rounded-xl w-full min-w-0',
+        'rows': 3,
+        'placeholder': 'Write your review...',
     }))
