@@ -1,4 +1,5 @@
 {% extends 'my_app/base.html' %}
+{% load static %}
 
 {% block title %}
 	My Profile
@@ -7,7 +8,11 @@
 {% block content %}
     <div class="w-2/3 mx-auto p-3 m-3 bg-gray-100 rounded-xl grid grid-cols-5 gap-3">
         <div class="col-span-2">
-            <img class="rounded-xl" src="{{ user_profile.photo.url }}" alt="{{ user.username }}">
+            {% if user_profile and user_profile.photo %}
+                <img class="rounded-xl" src="{{ user_profile.photo.url }}" alt="{{ user.username }}">
+            {% else %}
+                <img class="rounded-xl" src="{% static 'default_photo.jpg' %}" alt="Default Photo" >
+            {% endif %}
         </div>
         <div class="col-span-3">
             <h1 class="text-3xl flex justify-center">{{ user.first_name }} {{ user.last_name }}</h1>

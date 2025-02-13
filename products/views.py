@@ -27,4 +27,10 @@ def detail(request, product_id):
 
 
 
-    return render(request, 'products/detail.html', {'product': product, 'sizes': values, 'form': form, 'review_form': review_form, 'reviews': reviews})
+    return render(request, 'products/detail.html', {
+        'product': product,
+        'sizes': values,
+        'form': form,
+        'review_form': review_form,
+        'reviews': reviews[::-1],
+    })

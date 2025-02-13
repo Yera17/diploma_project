@@ -1,5 +1,6 @@
 {% extends "my_app/base.html" %}
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}
     {{ product.name }}
@@ -93,7 +94,11 @@
 
                  <div class="mb-3">
                     <label class="inline-block mb-2"><strong class="text-gray-500">Rating:</strong></label><br>
-                    {{ review_form.rating }}
+                    <div class="w-full">
+                        {{ review_form.rating }}
+                        <div class="min-w-full flex justify-between" id="stars">
+                        </div>
+                    </div>
                  </div>
             </div>
 
@@ -123,7 +128,7 @@
         </form>
 
         <div class="bg-white border border-gray-300 m-6 px-2 py-2 rounded-xl flex flex-col max-w-2/3">
-            {% for review in reviews %}
+            {% for review in reviews%}
                 <div class="flex p-3 rounded-xl border border-gray-300 m-3 bg-gray-100">
                     <div class="flex min-w-fit p-2">
                         {% if review.user.userprofile.photo %}
@@ -134,12 +139,27 @@
                         <p class="text-xl ml-2 items-center">{{ review.user.username }}</p>
                     </div>
 
-                    <div class="mx-2 pt-6 border-l border-gray-300 p-2 flex flex-col min-w-0">
+                    <div class="mr-2 border-l border-gray-300 p-2 flex flex-col min-w-0 w-full">
+                        <div class="flex justify-end text-xs mb-2">
+                            {{ review.created_at }}
+                        </div>
+
                         <div class="mr-2 flex">
                             <p><strong class="text-gray-500">Title:</strong></p>
                             <p class="ml-2 min-w-0 break-words">{{ review.title }}</p>
                         </div>
-                            <p><strong class="text-gray-500">Rating:   </strong>{{ review.rating }}</p>
+
+                        <p class="flex items-center my-2">
+                            {% for _ in review.rating|times %}
+                                <i class="text-yellow-600 mr-1 fa-solid fa-star"></i>
+                            {% endfor %}
+                            {% if review.rating|is_point_five %}
+                            	<i class="text-yellow-600 mr-1 fa-solid fa-star-half-stroke"></i>
+                            {% endif %} 
+                            {% for _ in review.rating|five_minus_times %}
+                                <i class="text-yellow-600 mr-1 fa-regular fa-star"></i>
+                            {% endfor %}
+                        </p>
                         <div class="flex">
                             <p><strong class="text-gray-500">Content: </strong></p>
                             <p class="ml-2 break-words min-w-0">{{ review.text }}</p>
@@ -149,4 +169,5 @@
             {% endfor %}
         </div>
     </div>
+    <script src="{% static 'js/oninput.js' %}"></script>
 {% endblock %}
