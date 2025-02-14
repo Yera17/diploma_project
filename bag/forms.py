@@ -22,7 +22,9 @@ class BagItemForm(forms.ModelForm):
     quantity = forms.IntegerField(widget=forms.NumberInput(attrs={
         'placeholder': 'Select Quantity',
         'title': 'Select Quantity',
-        'class': 'w-5/6 px-2 rounded-xl'
+        'class': 'px-2 rounded-xl',
+        'min': '1',
+        'max': '100',
     }), initial=1, required=False)
 
     def __init__(self, *args, product_id=None, **kwargs):

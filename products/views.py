@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from bag.forms import BagItemForm
 from bag.models import Bag
-from products.models import Product
+from products.models import Product, Category
 from review.forms import ReviewForm
 from review.models import Review
 
@@ -33,4 +33,12 @@ def detail(request, product_id):
         'form': form,
         'review_form': review_form,
         'reviews': reviews[::-1],
+    })
+
+def category_products(request, category_name):
+    category = get_object_or_404(Category, name=category_name)
+    products = category.products.all()
+    return render(request, 'products/category.html', {
+        'products': products,
+        'category': category,
     })
