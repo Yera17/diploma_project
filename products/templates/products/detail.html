@@ -1,4 +1,6 @@
 {% extends "my_app/base.html" %}
+{% load static %}
+{% load custom_filters %}
 
 {% block title %}
     {{ product.name }}
@@ -80,4 +82,92 @@
         </div>
     </div>
 
+    <div class="w-2/3 mx-auto m-6 p-6 bg-gray-100 rounded-xl text-gray-700">
+         <form class="flex justify-center flex" method="post" action="{% url 'review:add_review' product.id %}">
+            {% csrf_token %}
+
+            <div class="flex flex-col m-3">
+                 <div class="mb-3">
+                    <label class="inline-block mb-2"><strong class="text-gray-500">Title:</strong></label><br>
+                    {{ review_form.title }}
+                 </div>
+
+                 <div class="mb-3">
+                    <label class="inline-block mb-2"><strong class="text-gray-500">Rating:</strong></label><br>
+                    <div class="w-full">
+                        {{ review_form.rating }}
+                        <div class="min-w-full flex justify-between" id="stars">
+                        </div>
+                    </div>
+                 </div>
+            </div>
+
+
+             <div class="w-full m-3">
+                <label class="inline-block mb-2"><strong class="text-gray-500">Content:</strong></label>
+                {{ review_form.text }}
+
+                 {% if review_form.errors or review_form.non_field_errors %}
+                    <div class="mb-3 p-6 bg-red-100 rounded-xl">
+                        {% for field in review_form %}
+                            {{ field.errors }}
+                        {% endfor %}
+
+                        {{ review_form.non_field_errors }}
+                    </div>
+                 {% endif %}
+                <div class="flex justify-end">
+                    <button class="w-1/2 p-2 text-lg rounded-xl text-white shadow-md mt-2 bg-gray-500 hover:bg-gray-700 hover:shadow-lg transition-shadow duration-300">
+                        Submit
+                    </button>
+                </div>
+
+             </div>
+
+
+        </form>
+
+        <div class="bg-white border border-gray-300 m-6 px-2 py-2 rounded-xl flex flex-col max-w-2/3">
+            {% for review in reviews%}
+                <div class="flex p-3 rounded-xl border border-gray-300 m-3 bg-gray-100">
+                    <div class="flex min-w-fit p-2">
+                        {% if review.user.userprofile.photo %}
+                            <img src="{{ review.user.userprofile.photo.url }}" alt="User Photo" class="w-10 h-10 border border-gray-200 rounded-full">
+                        {% else %}
+                            <img src="{% static 'default_photo.jpg' %}" alt="Default Photo" class="w-10 h-10 border border-gray-200 rounded-full">
+                        {% endif %}
+                        <p class="text-xl ml-2 items-center">{{ review.user.username }}</p>
+                    </div>
+
+                    <div class="mr-2 border-l border-gray-300 p-2 flex flex-col min-w-0 w-full">
+                        <div class="flex justify-end text-xs mb-2">
+                            {{ review.created_at }}
+                        </div>
+
+                        <div class="mr-2 flex">
+                            <p><strong class="text-gray-500">Title:</strong></p>
+                            <p class="ml-2 min-w-0 break-words">{{ review.title }}</p>
+                        </div>
+
+                        <p class="flex items-center my-2">
+                            {% for _ in review.rating|times %}
+                                <i class="text-yellow-600 mr-1 fa-solid fa-star"></i>
+                            {% endfor %}
+                            {% if review.rating|is_point_five %}
+                            	<i class="text-yellow-600 mr-1 fa-solid fa-star-half-stroke"></i>
+                            {% endif %} 
+                            {% for _ in review.rating|five_minus_times %}
+                                <i class="text-yellow-600 mr-1 fa-regular fa-star"></i>
+                            {% endfor %}
+                        </p>
+                        <div class="flex">
+                            <p><strong class="text-gray-500">Content: </strong></p>
+                            <p class="ml-2 break-words min-w-0">{{ review.text }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="{% static 'js/oninput.js' %}"></script>
 {% endblock %}

@@ -5,32 +5,43 @@
 {% endblock %}
 
 {% block content %}
-    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
-        <h2 class="mb-12 text-2xl text-center">Wish List</h2>
+    <div class="w-2/3 mx-auto mt-6 px-6 py-12 bg-gray-100 rounded-xl min-h-96">
 
-        <div class="grid grid-cols-5 gap-3">
-            {% for wish in wishes %}
-                <div>
-                    <a href="{% url 'products:detail' wish.product_id %}">
-                        <div>
-                            <form class="flex justify-end" method="post" action="{% url 'wish_list:remove_from_wish_list' wish.id %}">
-                                {% csrf_token %}
 
-                                <button class="text-3xl hover:text-4xl hover:text-red-700" title="Delete from Wish List">
-                                    <i class="m-2 absolute z-10 fa-solid fa-trash"></i>
-                                </button>
-                            </form>
-                            <img src="{{ wish.product.img_url }}" class="rounded-t-xl w-full h-96 object-cover" alt="{{ wish.product.name }}">
-                        </div>
+        {% if wishes.count == 0 %}
+            <div class="flex justify-center items-center h-48 flex-col p-6">
+                <h2 class="text-xl"><strong>Wish List is empty</strong></h2>
+                <p class="text-l">Wishlist your lovely products! Save them for a future purchase!</p>
+                <a href="/" class="text-xl mt-4 text-teal-500 hover:text-teal-700">Go Back</a>
+            </div>
+        {% else %}
+            <h1 class="mb-12 text-3xl text-center">Wish List</h1>
+            <div class="grid-rows grid gap-6">
+                {% for wish in wishes %}
+                    <div class="flex">
+                        <a class="flex border border-gray-200 rounded-xl" href="{% url 'products:detail' wish.product_id %}">
+                            <div>
+                                <img src="{{ wish.product.img_url }}" class="h-48 min-w-24 w-48 rounded-l-xl object-cover" alt="{{ wish.product.name }}">
+                            </div>
 
-                        <div class="p-6 bg-white rounded-b-xl">
-                            <h2 class="text-2xl">{{ wish.product.name }}</h2>
-                            <p class="text-gray-500 flex justify-end">Price: {{ wish.product.price }}$</p>
-                        </div>
-                    </a>
-                </div>
-            {% endfor %}
-        </div>
+                            <div class="p-6 bg-white rounded-r-xl flex flex-col">
+                                <div>
+                                    <h2 class="text-2xl">{{ wish.product.name }}</h2>
+                                </div>
+                                <p class="text-gray-500 flex justify-end items-end flex-grow">Price: {{ wish.product.price }}$</p>
+                            </div>
+                        </a>
+                        <form class="min-w-6" method="post" action="{% url 'wish_list:remove_from_wish_list' wish.id %}">
+                            {% csrf_token %}
+
+                            <button class="text-3xl hover:text-4xl hover:text-red-700" title="Delete from Wish List">
+                                <i class="m-2 absolute z-10 fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
 {% endblock %}

@@ -37,6 +37,6 @@ const change = (fileInput, dropArea) => {
     if (file) {
       dropArea.classList.add("pointer-events-none");
       dropArea.classList.remove("hover:bg-gray-50");
-      dropArea.querySelector('label').innerHTML = 'Image added';
+      dropArea.querySelector('label').innerHTML = `Image: ${file.name} was added`;
     }
 }
