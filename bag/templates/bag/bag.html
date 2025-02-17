@@ -7,12 +7,9 @@
 
 {% block content %}
     <div class="w-2/3 mx-auto mt-6 px-6 py-12 bg-gray-100 rounded-xl min-h-96">
-
-
         {% if formset.initial_form_count == 0 %}
             <div class="flex justify-center items-center h-48 flex-col p-6">
                 <h2 class="text-xl"><strong>Your Bag is empty</strong></h2>
-                <p class="text-l">Products remain in your bag for 60 minutes,<br> and then they’re moved to your Wish List.</p>
                 <a href="/" class="text-xl mt-4 text-teal-500 hover:text-teal-700">Go Back</a>
             </div>
         {% else %}
@@ -24,7 +21,6 @@
                 {{ formset.management_form }}
 
                 <ul class="list-decimal">
-                    {% if formset.initial_form_count > 0 %}
                         {% for form in formset %}
                             <li class="ml-2 p-3 flex">
                                 <div class="flex justify-between border border-gray-200 rounded-xl mb-3">
@@ -75,14 +71,18 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
-                    {% endif %}
                 </ul>
                     <div class="w-full flex justify-end">
                         <button type="submit" name="action" value="update" class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700">Update</button>
                     </div>
             </form>
-
         {% endif %}
+        <form method="post" action="{% url 'purchase:make_purchase' %}">
+            {% csrf_token %}
+            <div class="w-full flex justify-end">
+                <button class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-red-500 hover:bg-red-700" type="submit" name="action" value="{{ bag.id }}" >Buy</button>
+            </div>
+        </form>
     </div>
 
     <script src="{% static 'js/onbutton.js' %}"></script>

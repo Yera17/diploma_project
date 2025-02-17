@@ -35,7 +35,11 @@ def bag(request):
     else:
         formset = bag_item_form_set(queryset=bag_items)
 
-    return render(request, 'bag/bag.html', {"bag_items": bag_items, "formset": formset})
+    return render(request, 'bag/bag.html', {
+        "bag_items": bag_items,
+        "formset": formset,
+        "bag": the_bag
+    })
 
 def create_bag_item(bag_item_id):
     bag_item = BagItem.objects.get(id=bag_item_id)

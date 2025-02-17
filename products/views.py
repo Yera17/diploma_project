@@ -14,18 +14,17 @@ def detail(request, product_id):
     review_form = ReviewForm
     reviews = Review.objects.filter(product_id=product_id)
 
-
     if request.method == 'POST':
         form = BagItemForm(request.POST, product_id=product_id)
+        action = request.POST.get('action')
         if form.is_valid():
             bag_item = form.save(commit=False)
             bag_item.bag = Bag.objects.get(user=request.user)
             bag_item.save()
-            return redirect('bag:bag')
+            if action == 'buy':
+                return redirect('bag:bag')
     else:
         form = BagItemForm(product_id=product_id)
-
-
 
     return render(request, 'products/detail.html', {
         'product': product,
