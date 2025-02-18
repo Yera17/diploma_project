@@ -29,4 +29,46 @@
             </form>
         </div>
     </div>
+
+    <div class="w-2/3 mx-auto p-3 m-3 bg-gray-100 rounded-xl">
+        <h2 class="p-3 text-2xl flex justify-center">Your Purchases</h2>
+
+        <div class="grid grid-cols-3 gap-3">
+            {% for purchase in purchases %}
+                {% if purchase.status == "pending" %}
+                    <a class="m-3 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300" href="{% url 'purchase:purchase' purchase.id %}">
+                        <div class="col-span-1 border border-gray-200 rounded-xl text-gray-700">
+                            <img class="h-48 w-full rounded-t-xl object-cover" src="{{ purchase.purchaseitem_set.first.product_size.product.img_url }}" alt="{{ purchase.purchaseitem_set.first.product_size.product }}">
+
+                            <div class="flex justify-between p-3">
+                                <p class="text-l">ID: {{ purchase.id }}</p>
+                                <p class="text-l">{{ purchase.created_at }}</p>
+                            </div>
+
+                            <div class="m-3">
+                                <p class="text-l"><strong class="text-gray-500">Status: </strong>{{ purchase.status }}</p>
+                                <p class="text-l"><strong class="text-gray-500">Number of Items: </strong>{{ purchase.purchaseitem_set.count }}</p>
+                                <p class="mb-1 text-l flex justify-between"><strong class="pt-3 pr-2 text-gray-500">Total Price: </strong><span class="bg-white p-3 rounded-xl text-black">{{ purchase.total_price }}$</span></p>
+                            </div>
+                        </div>
+                    </a>
+                {% else %}
+                    <div class="m-3 col-span-1 border border-gray-200 rounded-xl text-gray-700">
+                        <img class="h-48 w-full rounded-t-xl object-cover" src="{{ purchase.purchaseitem_set.first.product_size.product.img_url }}" alt="{{ purchase.purchaseitem_set.first.product_size.product }}">
+
+                        <div class="flex justify-between p-3">
+                            <p class="text-l">ID: {{ purchase.id }}</p>
+                            <p class="text-l">{{ purchase.created_at }}</p>
+                        </div>
+
+                        <div class="m-3">
+                            <p class="text-l"><strong class="text-gray-500">Status: </strong>{{ purchase.status }}</p>
+                            <p class="text-l"><strong class="text-gray-500">Number of Items: </strong>{{ purchase.purchaseitem_set.count }}</p>
+                            <p class="mb-1 text-l flex justify-between"><strong class="pt-3 pr-2 text-gray-500">Total Price: </strong><span class="bg-white p-3 rounded-xl text-black">{{ purchase.total_price }}$</span></p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

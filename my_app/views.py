@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 
 from bag.models import Bag
 from products.models import Product, Category
+from purchase.models import Purchase
 from wish_list.models import WishList
 from .forms import SignUpForm
 from .models import UserProfile
@@ -40,4 +41,5 @@ def signup(request):
 
 def profile(request, user_id):
     user = User.objects.get(id=user_id)
-    return render(request, 'my_app/profile.html', {"user":user})
+    purchases = Purchase.objects.filter(user=user).order_by('-created_at')
+    return render(request, 'my_app/profile.html', {"user":user, "purchases":purchases})

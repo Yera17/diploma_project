@@ -7,7 +7,7 @@ from products.models import ProductSize
 class Purchase(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    status = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

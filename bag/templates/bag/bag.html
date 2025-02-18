@@ -7,6 +7,14 @@
 
 {% block content %}
     <div class="w-2/3 mx-auto mt-6 px-6 py-12 bg-gray-100 rounded-xl min-h-96">
+        {% if messages %}
+            <ul class="messages flex flex-grow justify-center">
+                {% for message in messages %}
+                    <li class="text-2xl bg-red-500 text-white p-3 mb-3 rounded-xl {{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
         {% if formset.initial_form_count == 0 %}
             <div class="flex justify-center items-center h-48 flex-col p-6">
                 <h2 class="text-xl"><strong>Your Bag is empty</strong></h2>
@@ -33,6 +41,7 @@
                                             <div>
                                                 <h2 class="text-2xl">{{ form.instance.productSize.product }}</h2>
                                                 <p>{{ form.id }}</p>
+                                                <p class="text-xs">Available: <strong>{{ form.instance.productSize.number_in_stock }}</strong></p>
                                             </div>
                                             <p class="text-gray-500 flex justify-end items-end flex-grow">Price: {{ form.instance.productSize.product.price }}$</p>
                                         </div>
@@ -73,17 +82,17 @@
                         {% endfor %}
                 </ul>
                     <div class="w-full flex justify-end">
-                        <button type="submit" name="action" value="update" class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700">Update</button>
+                        <button type="submit" name="action" value="update" class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-gray-500 hover:bg-gray-700">Update</button>
                     </div>
             </form>
         {% endif %}
         <form method="post" action="{% url 'purchase:make_purchase' %}">
             {% csrf_token %}
             <div class="w-full flex justify-end">
-                <button class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-red-500 hover:bg-red-700" type="submit" name="action" value="{{ bag.id }}" >Buy</button>
+                <button class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700" type="submit" name="action" value="{{ bag.id }}" >Buy</button>
             </div>
         </form>
     </div>
 
-    <script src="{% static 'js/onbutton.js' %}"></script>
+    <script src="{% static 'js/bag.js' %}"></script>
 {% endblock %}

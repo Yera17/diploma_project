@@ -38,8 +38,14 @@
         </div>
 
         <div class="flex justify-between py-3">
-            <button class="px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-red-700">Cancel</button>
-            <button class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Buy</button>
+            <form method="post" action="{% url 'purchase:cancel' purchase.id %}">
+                {% csrf_token %}
+                <button class="px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-red-700">Cancel</button>
+            </form>
+            <form method="post" action="{% url 'purchase:buy' purchase.id %}">
+                {% csrf_token %}
+                <button class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Buy</button>
+            </form>
         </div>
     </div>
 {% endblock %}
