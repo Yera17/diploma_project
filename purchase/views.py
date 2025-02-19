@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.db.utils import IntegrityError
 from django.contrib import messages
@@ -29,13 +30,9 @@ def make_purchase(request):
             total_price += purchase_item.price
 
         new_purchase.total_price = total_price
-        try:
-            stock_dealing(purchase_items, True)
-        except IntegrityError:
-            stock_dealing(purchase_items, False)
-            new_purchase.delete()
-            messages.error(request, "Not available quantity")
-            return redirect("bag:bag")
+
+        if make_stock_dealing(request, purchase_items):
+            return redirect('bag:bag')
 
         new_purchase.save()
         return redirect("purchase:purchase", new_purchase.id)
@@ -56,7 +53,7 @@ def cancel_purchase(request, purchase_id):
         get_purchase.status = "Cancelled"
         get_purchase.save()
 
-        stock_dealing(items, False)
+        cancel_stock_dealing(items)
 
         return redirect("bag:bag")
 
@@ -64,28 +61,68 @@ def cancel_purchase(request, purchase_id):
 
 def buy(request, purchase_id):
     get_purchase = Purchase.objects.get(id=purchase_id)
+    items = get_purchase.purchaseitem_set.all()
 
     if request.method == "POST":
         get_purchase.status = "Completed"
         get_purchase.save()
+        buy_stock_dealing(items)
 
+        bag = Bag.objects.get(user=request.user)
+        bag.bagitem_set.all().delete()
         return redirect("/")
 
     return render(request, "purchase/purchase.html")
 
-def stock_dealing(items, boolean):
+def make_stock_dealing(req, items):
+    id_and_quantity = {}
+
+    # Collect quantities in one pass
     for item in items:
-        total_in_stock = 0
+        product_size_id = item.product_size.id
+        id_and_quantity[product_size_id] = id_and_quantity.get(product_size_id, 0) + item.quantity
+
+    try:
+        with transaction.atomic():  # Ensures atomicity (prevents partial updates)
+            for product_size_id, total_quantity in id_and_quantity.items():
+                product_size = ProductSize.objects.select_for_update().get(id=product_size_id)
+
+                # Prevent stock from going negative
+                if product_size.number_in_stock < total_quantity:
+                    messages.error(req, "Not enough stock available.")
+                    return True  # Redirect if stock is insufficient
+
+                product_size.number_in_stock -= total_quantity
+                if product_size.number_in_stock == 0:
+                    product_size.in_stock = False
+                product_size.save()
+
+    except Exception as e:  # Catch unexpected errors
+        messages.error(req, e)
+        return True
+
+    return False
+
+def cancel_stock_dealing(items):
+    for item in items:
         product_size = ProductSize.objects.get(id=item.product_size.id)
-        product = Product.objects.get(id=product_size.product_id)
-        if boolean:
-            product_size.number_in_stock = product_size.number_in_stock - item.quantity
-        else:
-            product_size.number_in_stock = product_size.number_in_stock + item.quantity
+
+        product_size.number_in_stock = product_size.number_in_stock + item.quantity
+
         product_size.save()
+        size_dealing(product_size)
 
-        for size in product.sizes.all():
-            total_in_stock += size.number_in_stock
+def buy_stock_dealing(items):
+    for item in items:
+        product_size = ProductSize.objects.get(id=item.product_size.id)
+        size_dealing(product_size)
 
-        product.total_in_stock = total_in_stock
-        product.save()
+def size_dealing(product_size):
+    total_in_stock = 0
+    product = Product.objects.get(id=product_size.product_id)
+    for size in product.sizes.all():
+        total_in_stock += size.number_in_stock
+
+    product.total_in_stock = total_in_stock
+    product.save()
+

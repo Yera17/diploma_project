@@ -9,8 +9,10 @@ from review.models import Review
 
 def detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    sizes = product.sizes.all()
+    sizes = product.sizes.filter(in_stock=True)
     values = ' | '.join([size.value for size in sizes])
+    unavailable_sizes = product.sizes.filter(in_stock=False)
+    unavailable_values = ' | '.join([size.value for size in unavailable_sizes])
     review_form = ReviewForm
     reviews = Review.objects.filter(product_id=product_id)
 
@@ -28,6 +30,7 @@ def detail(request, product_id):
 
     return render(request, 'products/detail.html', {
         'product': product,
+        'unavailable_sizes': unavailable_values,
         'sizes': values,
         'form': form,
         'review_form': review_form,
@@ -36,7 +39,7 @@ def detail(request, product_id):
 
 def category_products(request, category_name):
     category = get_object_or_404(Category, name=category_name)
-    products = category.products.all()
+    products = category.products.filter(in_stock=True)
     return render(request, 'products/category.html', {
         'products': products,
         'category': category,

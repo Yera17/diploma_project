@@ -9,7 +9,7 @@ from .forms import SignUpForm
 from .models import UserProfile
 def index(request):
     categories = Category.objects.all()
-    products = Product.objects.all()
+    products = Product.objects.filter(in_stock=True)
     return render(request, 'my_app/index.html', {
         'categories': categories,
         'products': products,

@@ -25,11 +25,11 @@ class BagItemForm(forms.ModelForm):
         super(BagItemForm, self).__init__(*args, **kwargs)
 
         if product_id:
-            self.fields['productSize'].queryset = ProductSize.objects.filter(product_id=product_id)
+            self.fields['productSize'].queryset = ProductSize.objects.filter(product_id=product_id, in_stock=True)
         else:
             # Use instance data if available
             if self.instance and self.instance.productSize_id:
-                self.fields['productSize'].queryset = ProductSize.objects.filter(product_id=ProductSize.objects.get(id=self.instance.productSize_id).product_id)
+                self.fields['productSize'].queryset = ProductSize.objects.filter(product_id=ProductSize.objects.get(id=self.instance.productSize_id).product_id, in_stock=True)
                 if self.instance and self.instance.productSize.in_stock:
                     self.fields['quantity'].widget.attrs['max'] = self.instance.productSize.number_in_stock
             else:

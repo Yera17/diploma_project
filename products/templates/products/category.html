@@ -11,7 +11,7 @@
             <div class="grid grid-cols-5 gap-3">
                 {% for product in products %}
                     <div>
-                        <a href="products/{{ product.id }}/">
+                        <a href="{% url "products:detail" product.id %}">
                             <div>
                                 <img src="{{ product.img_url }}" class="rounded-t-xl w-full h-96 object-cover" alt="{{ product.name }}">
                             </div>

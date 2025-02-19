@@ -5,9 +5,17 @@ from bag.models import BagItem, Bag
 from django.forms import modelformset_factory
 import re
 
+from wish_list.models import WishListItem, WishList
+
+
 # Create your views here.
 def bag(request):
     the_bag = Bag.objects.get(user=request.user)
+    wish_list = WishList.objects.get(user=request.user)
+    no_in_stock = BagItem.objects.filter(bag=the_bag, productSize__in_stock=False)
+    for item in no_in_stock:
+        WishListItem.objects.create(wish_list=wish_list, product=item.productSize.product)
+        item.delete()
     bag_items = BagItem.objects.filter(bag=the_bag)
     bag_item_form_set = modelformset_factory(BagItem, form=BagItemForm, extra=0)
 

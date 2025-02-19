@@ -86,12 +86,14 @@
                     </div>
             </form>
         {% endif %}
-        <form method="post" action="{% url 'purchase:make_purchase' %}">
-            {% csrf_token %}
-            <div class="w-full flex justify-end">
-                <button class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700" type="submit" name="action" value="{{ bag.id }}" >Buy</button>
-            </div>
-        </form>
+        {% if bag_items.count > 0 %}
+            <form method="post" action="{% url 'purchase:make_purchase' %}">
+                {% csrf_token %}
+                <div class="w-full flex justify-end">
+                    <button class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700" type="submit" name="action" value="{{ bag.id }}" >Buy</button>
+                </div>
+            </form>
+        {% endif %}
     </div>
 
     <script src="{% static 'js/bag.js' %}"></script>
