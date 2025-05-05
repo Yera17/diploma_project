@@ -124,5 +124,7 @@ def size_dealing(product_size):
         total_in_stock += size.number_in_stock
 
     product.total_in_stock = total_in_stock
+    if product.total_in_stock == 0:
+        product.in_stock = False
     product.save()
 

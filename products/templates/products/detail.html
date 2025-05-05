@@ -1,6 +1,8 @@
 {% extends "my_app/base.html" %}
 {% load static %}
 {% load custom_filters %}
+{% load humanize %}
+
 
 {% block title %}
     {{ product.name }}
@@ -15,7 +17,20 @@
         <div class="col-span-1"></div>
 
         <div class="col-span-4 p-6 bg-gray-100 rounded-xl flex flex-col justify-between">
-            <h1 class="text-3xl">{{ product.name }}</h1>
+            <h1 class="text-3xl font-semibold">{{ product.name }}</h1>
+
+            <p class="flex items-center my-2">
+                {% for _ in average_review|times %}
+                    <i class="text-yellow-600 mr-1 fa-solid fa-star"></i>
+                {% endfor %}
+                {% if average_review|is_point_five %}
+                    <i class="text-yellow-600 mr-1 fa-solid fa-star-half-stroke"></i>
+                {% endif %}
+                {% for _ in average_review|five_minus_times %}
+                    <i class="text-yellow-600 mr-1 fa-regular fa-star"></i>
+                {% endfor %}
+                ({{ count }} reviews)
+            </p>
 
             {% if messages %}
                 <ul class="bg-red-300 p-2 rounded-xl border border-gray-300">
@@ -60,7 +75,7 @@
                         {% endif %}
                     </div>
 
-                    <p class="text-gray-500 text-2xl flex items-end">{{ product.price }}$</p>
+                    <p class="text-gray-500 text-2xl flex items-end">{{ product.price|floatformat:2|intcomma }}$</p>
                 </div>
 
                 <div class="border border-gray-300 p-6 rounded-xl">

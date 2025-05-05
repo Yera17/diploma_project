@@ -1,5 +1,7 @@
 {% extends "my_app/base.html" %}
 {% load static %}
+{% load humanize %}
+
 
 {% block title %}
     My Bag
@@ -21,7 +23,7 @@
                 <a href="/" class="text-xl mt-4 text-teal-500 hover:text-teal-700">Go Back</a>
             </div>
         {% else %}
-            <h1 class="mb-12 text-3xl text-center">Your Bag</h1>
+            <h1 class="mb-12 text-3xl text-center font-semibold">Your Bag</h1>
 
             <form method="post" action=".">
                 {% csrf_token %}
@@ -43,7 +45,7 @@
                                                 <p>{{ form.id }}</p>
                                                 <p class="text-xs">Available: <strong>{{ form.instance.productSize.number_in_stock }}</strong></p>
                                             </div>
-                                            <p class="text-gray-500 flex justify-end items-end flex-grow">Price: {{ form.instance.productSize.product.price }}$</p>
+                                            <p class="text-gray-500 flex justify-end items-end flex-grow">Price: {{ form.instance.productSize.product.price|floatformat:2|intcomma }}$</p>
                                         </div>
                                     </a>
                                     <div class="p-6">

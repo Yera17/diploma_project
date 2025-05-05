@@ -15,7 +15,7 @@
             {% endif %}
         </div>
         <div class="col-span-3">
-            <h1 class="text-3xl flex justify-center">{{ user.first_name }} {{ user.last_name }}</h1>
+            <h1 class="text-3xl flex justify-center font-semibold">{{ user.first_name }} {{ user.last_name }}</h1>
 
             <div class="m-3">
                 <p class="mb-1 text-xl">Username: {{ user.username }}</p>
@@ -31,11 +31,10 @@
     </div>
 
     <div class="w-2/3 mx-auto p-3 m-3 bg-gray-100 rounded-xl">
-        <h2 class="p-3 text-2xl flex justify-center">Your Purchases</h2>
+        <h2 class="p-3 text-2xl flex justify-center font-semibold">Your Purchases</h2>
 
         <div class="grid grid-cols-3 gap-3">
             {% for purchase in purchases %}
-                {% if purchase.status == "pending" %}
                     <a class="m-3 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300" href="{% url 'purchase:purchase' purchase.id %}">
                         <div class="col-span-1 border border-gray-200 rounded-xl text-gray-700">
                             <img class="h-48 w-full rounded-t-xl object-cover" src="{{ purchase.purchaseitem_set.first.product_size.product.img_url }}" alt="{{ purchase.purchaseitem_set.first.product_size.product }}">
@@ -46,28 +45,19 @@
                             </div>
 
                             <div class="m-3">
-                                <p class="text-l"><strong class="text-gray-500">Status: </strong>{{ purchase.status }}</p>
+                                {% if purchase.status == "Completed" %}
+                                    <p class="text-l text-green-700"><strong class="text-gray-500">Status: </strong>{{ purchase.status }}</p>
+                                {% elif purchase.status == "Cancelled" %}
+                                    <p class="text-l text-red-700"><strong class="text-gray-500">Status: </strong>{{ purchase.status }}</p>
+                                {% else %}
+                                    <p class="text-l"><strong class="text-gray-500">Status: </strong>{{ purchase.status }}</p>
+                                {% endif %}
+
                                 <p class="text-l"><strong class="text-gray-500">Number of Items: </strong>{{ purchase.purchaseitem_set.count }}</p>
                                 <p class="mb-1 text-l flex justify-between"><strong class="pt-3 pr-2 text-gray-500">Total Price: </strong><span class="bg-white p-3 rounded-xl text-black">{{ purchase.total_price }}$</span></p>
                             </div>
                         </div>
                     </a>
-                {% else %}
-                    <div class="m-3 col-span-1 border border-gray-200 rounded-xl text-gray-700">
-                        <img class="h-48 w-full rounded-t-xl object-cover" src="{{ purchase.purchaseitem_set.first.product_size.product.img_url }}" alt="{{ purchase.purchaseitem_set.first.product_size.product }}">
-
-                        <div class="flex justify-between p-3">
-                            <p class="text-l">ID: {{ purchase.id }}</p>
-                            <p class="text-l">{{ purchase.created_at }}</p>
-                        </div>
-
-                        <div class="m-3">
-                            <p class="text-l"><strong class="text-gray-500">Status: </strong>{{ purchase.status }}</p>
-                            <p class="text-l"><strong class="text-gray-500">Number of Items: </strong>{{ purchase.purchaseitem_set.count }}</p>
-                            <p class="mb-1 text-l flex justify-between"><strong class="pt-3 pr-2 text-gray-500">Total Price: </strong><span class="bg-white p-3 rounded-xl text-black">{{ purchase.total_price }}$</span></p>
-                        </div>
-                    </div>
-                {% endif %}
             {% endfor %}
         </div>
     </div>

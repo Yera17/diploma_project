@@ -1,5 +1,7 @@
 {% extends "./base.html" %}
 
+{% load humanize %}
+
     {% block title %}
         Welcome
     {% endblock %}
@@ -21,7 +23,7 @@
         </div>
 
         <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
-            <h1 class="mb-12 text-3xl text-center">New Season</h1>
+            <h1 class="mb-12 text-3xl text-center font-semibold">New Season</h1>
 
             <div class="grid grid-cols-5 gap-3">
                 {% for product in products %}
@@ -33,7 +35,7 @@
 
                             <div class="p-6 bg-white rounded-b-xl">
                                 <h2 class="text-2xl">{{ product.name }}</h2>
-                                <p class="text-gray-500 flex justify-end">Price: {{ product.price }}$</p>
+                                <p class="text-gray-500 flex justify-end">Price: {{ product.price|floatformat:2|intcomma }}$</p>
                             </div>
                         </a>
                     </div>

@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 
 from bag.forms import BagItemForm
@@ -14,7 +15,10 @@ def bag(request):
     wish_list = WishList.objects.get(user=request.user)
     no_in_stock = BagItem.objects.filter(bag=the_bag, productSize__in_stock=False)
     for item in no_in_stock:
-        WishListItem.objects.create(wish_list=wish_list, product=item.productSize.product)
+        try:
+            WishListItem.objects.create(wish_list=wish_list, product=item.productSize.product)
+        except IntegrityError:
+            pass
         item.delete()
     bag_items = BagItem.objects.filter(bag=the_bag)
     bag_item_form_set = modelformset_factory(BagItem, form=BagItemForm, extra=0)

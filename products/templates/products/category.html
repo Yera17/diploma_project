@@ -1,12 +1,28 @@
 {% extends "my_app/base.html" %}
 
+{% load humanize %}
+
     {% block title %}
         {{ category.name }}
     {% endblock %}
 
     {% block content %}
+        <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+            <div class="grid grid-cols-5 gap-3">
+                {% for type in types %}
+                    <div id="types">
+                        <a href="{% url 'products:category' type %}">
+                            <div class="p-6 bg-white rounded-b-xl">
+                                <h2 class="text-2xl">{{ type }}</h2>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
         <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl min-h-96">
-            <h1 class="mb-12 text-3xl text-center">{{ category.name }}</h1>
+            <h1 class="mb-12 text-3xl text-center font-semibold">{{ category.name }}</h1>
 
             <div class="grid grid-cols-5 gap-3">
                 {% for product in products %}
@@ -18,7 +34,7 @@
 
                             <div class="p-6 bg-white rounded-b-xl">
                                 <h2 class="text-2xl">{{ product.name }}</h2>
-                                <p class="text-gray-500 flex justify-end">Price: {{ product.price }}$</p>
+                                <p class="text-gray-500 flex justify-end">Price: {{ product.price|floatformat:2|intcomma }}$</p>
                             </div>
                         </a>
                     </div>

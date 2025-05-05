@@ -40,6 +40,10 @@ def signup(request):
     })
 
 def profile(request, user_id):
+    if request.user.id != user_id:
+        return redirect('my_app:login')
+    
     user = User.objects.get(id=user_id)
     purchases = Purchase.objects.filter(user=user).order_by('-created_at')
+
     return render(request, 'my_app/profile.html', {"user":user, "purchases":purchases})

@@ -1,26 +1,28 @@
 {% extends "my_app/base.html" %}
+{% load humanize %}
+
 
 {% block title %}
 	New Purchase
 {% endblock %}
 
 {% block content %}
-    <div class="w-2/3 mx-auto bg-gray-100 rounded-xl p-6">
+    <div class="w-2/3 mx-auto bg-gray-100 rounded-xl p-6 min-h-96 flex flex-col justify-between">
         {% for item in items %}
             <div class="flex justify-between border border-gray-200 mb-3 rounded-xl h-48">
-                <a class="flex justify-between border border-gray-200 rounded-xl" href="{% url 'products:detail' item.product_size.product.id %}">
+                <a class="flex border border-gray-200 rounded-xl w-full" href="{% url 'products:detail' item.product_size.product.id %}">
                     <div>
                         <img src="{{ item.product_size.product.img_url }}" class="h-full min-w-24 w-48 rounded-l-xl object-cover" alt="{{ item.product_size.product }}">
                     </div>
 
-                    <div class="p-6 bg-white flex flex-col rounded-xl">
+                    <div class="p-6 bg-white flex flex-col rounded-xl flex-grow">
                         <div>
                             <h2 class="text-2xl">{{ item.product_size.product }}</h2>
                         </div>
-                        <div class="text-gray-500 flex flex-col justify-end items-end flex-grow">
+                        <div class="text-gray-500 flex flex-col justify-end items-end w-full flex-grow">
                             <p>Size: {{ item.product_size.value }}</p>
                             <p>Quantity: {{ item.quantity }}</p>
-                            <p>Price: {{ item.price }}$</p>
+                            <p>Price: {{ item.price|floatformat:2|intcomma }}$</p>
                         </div>
                     </div>
                 </a>
@@ -31,21 +33,23 @@
                 <strong>Total Price: </strong>
 
                 <span class="p-2 bg-white rounded-xl">
-                    {{ purchase.total_price }}$
+                    {{ purchase.total_price|floatformat:2|intcomma }}$
                 </span>
             </p>
 
         </div>
 
-        <div class="flex justify-between py-3">
-            <form method="post" action="{% url 'purchase:cancel' purchase.id %}">
-                {% csrf_token %}
-                <button class="px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-red-700">Cancel</button>
-            </form>
-            <form method="post" action="{% url 'purchase:buy' purchase.id %}">
-                {% csrf_token %}
-                <button class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Buy</button>
-            </form>
-        </div>
+        {% if purchase.status == "pending" %}
+            <div class="flex justify-between py-3">
+                <form method="post" action="{% url 'purchase:cancel' purchase.id %}">
+                    {% csrf_token %}
+                    <button class="px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-red-700">Cancel</button>
+                </form>
+                <form method="post" action="{% url 'purchase:buy' purchase.id %}">
+                    {% csrf_token %}
+                    <button class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Buy</button>
+                </form>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

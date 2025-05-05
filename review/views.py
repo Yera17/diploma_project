@@ -8,13 +8,16 @@ from review.models import Review
 # Create your views here.
 def add_review(request, product_id):
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.user = request.user
-            review.product = Product.objects.get(id=product_id)
-            review.save()
-            return redirect('products:detail', product_id=product_id)
+        if request.user.is_authenticated:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.user = request.user
+                review.product = Product.objects.get(id=product_id)
+                review.save()
+                return redirect('products:detail', product_id=product_id)
+        else:
+            return redirect('my_app:login')
     else:
         form = ReviewForm()
     return redirect('products:detail', product_id=product_id)
