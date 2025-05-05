@@ -1,5 +1,7 @@
 {% extends "my_app/base.html" %}
 {% load static %}
+{% load humanize %}
+
 
 {% block title %}
     My Bag
@@ -7,16 +9,21 @@
 
 {% block content %}
     <div class="w-2/3 mx-auto mt-6 px-6 py-12 bg-gray-100 rounded-xl min-h-96">
-
+        {% if messages %}
+            <ul class="messages flex flex-grow justify-center">
+                {% for message in messages %}
+                    <li class="text-2xl bg-red-500 text-white p-3 mb-3 rounded-xl {{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
         {% if formset.initial_form_count == 0 %}
             <div class="flex justify-center items-center h-48 flex-col p-6">
                 <h2 class="text-xl"><strong>Your Bag is empty</strong></h2>
-                <p class="text-l">Products remain in your bag for 60 minutes,<br> and then they’re moved to your Wish List.</p>
                 <a href="/" class="text-xl mt-4 text-teal-500 hover:text-teal-700">Go Back</a>
             </div>
         {% else %}
-            <h1 class="mb-12 text-3xl text-center">Your Bag</h1>
+            <h1 class="mb-12 text-3xl text-center font-semibold">Your Bag</h1>
 
             <form method="post" action=".">
                 {% csrf_token %}
@@ -24,7 +31,6 @@
                 {{ formset.management_form }}
 
                 <ul class="list-decimal">
-                    {% if formset.initial_form_count > 0 %}
                         {% for form in formset %}
                             <li class="ml-2 p-3 flex">
                                 <div class="flex justify-between border border-gray-200 rounded-xl mb-3">
@@ -37,8 +43,9 @@
                                             <div>
                                                 <h2 class="text-2xl">{{ form.instance.productSize.product }}</h2>
                                                 <p>{{ form.id }}</p>
+                                                <p class="text-xs">Available: <strong>{{ form.instance.productSize.number_in_stock }}</strong></p>
                                             </div>
-                                            <p class="text-gray-500 flex justify-end items-end flex-grow">Price: {{ form.instance.productSize.product.price }}$</p>
+                                            <p class="text-gray-500 flex justify-end items-end flex-grow">Price: {{ form.instance.productSize.product.price|floatformat:2|intcomma }}$</p>
                                         </div>
                                     </a>
                                     <div class="p-6">
@@ -75,15 +82,21 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
-                    {% endif %}
                 </ul>
                     <div class="w-full flex justify-end">
-                        <button type="submit" name="action" value="update" class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700">Update</button>
+                        <button type="submit" name="action" value="update" class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-gray-500 hover:bg-gray-700">Update</button>
                     </div>
             </form>
-
+        {% endif %}
+        {% if bag_items.count > 0 %}
+            <form method="post" action="{% url 'purchase:make_purchase' %}">
+                {% csrf_token %}
+                <div class="w-full flex justify-end">
+                    <button class="mb-3 py-4 px-8 text-lg text-white rounded-xl bg-teal-500 hover:bg-teal-700" type="submit" name="action" value="{{ bag.id }}" >Buy</button>
+                </div>
+            </form>
         {% endif %}
     </div>
 
-    <script src="{% static 'js/onbutton.js' %}"></script>
+    <script src="{% static 'js/bag.js' %}"></script>
 {% endblock %}

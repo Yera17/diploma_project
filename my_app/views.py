@@ -3,12 +3,13 @@ from django.shortcuts import render, redirect
 
 from bag.models import Bag
 from products.models import Product, Category
+from purchase.models import Purchase
 from wish_list.models import WishList
 from .forms import SignUpForm
 from .models import UserProfile
 def index(request):
     categories = Category.objects.all()
-    products = Product.objects.all()
+    products = Product.objects.filter(in_stock=True)
     return render(request, 'my_app/index.html', {
         'categories': categories,
         'products': products,
@@ -39,5 +40,10 @@ def signup(request):
     })
 
 def profile(request, user_id):
+    if request.user.id != user_id:
+        return redirect('my_app:login')
+    
     user = User.objects.get(id=user_id)
-    return render(request, 'my_app/profile.html', {"user":user})
+    purchases = Purchase.objects.filter(user=user).order_by('-created_at')
+
+    return render(request, 'my_app/profile.html', {"user":user, "purchases":purchases})

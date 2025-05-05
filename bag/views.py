@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 
 from bag.forms import BagItemForm
@@ -5,9 +6,20 @@ from bag.models import BagItem, Bag
 from django.forms import modelformset_factory
 import re
 
+from wish_list.models import WishListItem, WishList
+
+
 # Create your views here.
 def bag(request):
     the_bag = Bag.objects.get(user=request.user)
+    wish_list = WishList.objects.get(user=request.user)
+    no_in_stock = BagItem.objects.filter(bag=the_bag, productSize__in_stock=False)
+    for item in no_in_stock:
+        try:
+            WishListItem.objects.create(wish_list=wish_list, product=item.productSize.product)
+        except IntegrityError:
+            pass
+        item.delete()
     bag_items = BagItem.objects.filter(bag=the_bag)
     bag_item_form_set = modelformset_factory(BagItem, form=BagItemForm, extra=0)
 
@@ -35,7 +47,11 @@ def bag(request):
     else:
         formset = bag_item_form_set(queryset=bag_items)
 
-    return render(request, 'bag/bag.html', {"bag_items": bag_items, "formset": formset})
+    return render(request, 'bag/bag.html', {
+        "bag_items": bag_items,
+        "formset": formset,
+        "bag": the_bag
+    })
 
 def create_bag_item(bag_item_id):
     bag_item = BagItem.objects.get(id=bag_item_id)
