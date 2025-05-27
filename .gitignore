@@ -1,4 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+*.egg
+
+# Environment files
 .env
-venv
-.venv
-__pycache__
+.env.*
+
+# Virtual environment
+venv/
+.venv/
+ENV/
+env/
+
+# Django specific
+db.sqlite3
+media/
+staticfiles/
+*.log
+
+# Migrations (optional – keep only if not shared across devs)
+# **Comment this out if you want to keep migrations in version control**
+# **/migrations/*
+# !*/migrations/__init__.py
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Linux
+*~ 
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Coverage & testing
+htmlcov/
+.coverage
+.cache
+.pytest_cache/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Docker
+*.pid
+*.pid.lock
+docker-compose.override.yml
+
+.idea/
